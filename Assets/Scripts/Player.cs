@@ -10,8 +10,8 @@ public class Player : MonoBehaviour
     private bool spacePressed = false;
     private float horizontalInput = 0;
     private Rigidbody rigidbodyComponent;
-    private bool isGrounded;
-    private int jumpCount = 0;
+    [SerializeField] private LayerMask playerMask;
+
 
     // create a empty object called GroundCheckTransform and move it to the feet of the capsule body.
     // this becomes our reference for where the foot of the capsule is, and we can
@@ -89,12 +89,18 @@ public class Player : MonoBehaviour
         // it's always colliding with its own collider
 
         // need to research what a Collider and OverlapSphere is in Unity
-        int colLength = Physics.OverlapSphere(groundCheckTransform.position, 0.1f).Length;
+
 
         // colliding with ground, it's grounded
-        if (colLength > 1)
+
+
+        //keep the velocity y the same as the original velocity. this makes sure that it retains any momentum. 
+        rigidbodyComponent.velocity = new Vector3(horizontalInput * 2, rigidbodyComponent.velocity.y, 0);
+
+        if (Physics.OverlapSphere(groundCheckTransform.position, 0.1f, playerMask).Length == 0) 
         {
-            jumpCount = 0;
+            return;
+
             
         }
 
@@ -108,18 +114,15 @@ public class Player : MonoBehaviour
             // else if velocity is 0, jumpcount = 0
             
 
-            if (jumpCount < 2)
-            {
-                rigidbodyComponent.AddForce(Vector3.up * 5, ForceMode.VelocityChange);
-                jumpCount++;
-                spacePressed = false;
+           
+            rigidbodyComponent.AddForce(Vector3.up * 5, ForceMode.VelocityChange);
+            spacePressed = false;
 
-            }
+            
 
             
 
             Debug.Log(ypos);
-            Debug.Log(jumpCount);
 
 
             
@@ -130,21 +133,9 @@ public class Player : MonoBehaviour
 
 
 
-        //keep the velocity y the same as the original velocity. this makes sure that it retains any momentum. 
-        rigidbodyComponent.velocity = new Vector3(horizontalInput * 2, rigidbodyComponent.velocity.y, 0);
-           
 
 
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        isGrounded = true;
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        isGrounded = false;
-    }
 
 }
