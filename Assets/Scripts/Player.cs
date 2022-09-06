@@ -8,9 +8,13 @@ public class Player : MonoBehaviour
 {
 
     private bool spacePressed = false;
+    private bool shiftPressed = false;
+
     private float horizontalInput = 0;
     private Rigidbody rigidbodyComponent;
     [SerializeField] private LayerMask playerMask;
+
+    private int powerUpCount = 0;
 
 
     // create a empty object called GroundCheckTransform and move it to the feet of the capsule body.
@@ -56,6 +60,11 @@ public class Player : MonoBehaviour
             spacePressed = true;
 
 
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            shiftPressed = true;
         }
 
         horizontalInput = Input.GetAxis("Horizontal");
@@ -131,6 +140,13 @@ public class Player : MonoBehaviour
 
         }
 
+        if (shiftPressed && powerUpCount > 0)
+        {
+            rigidbodyComponent.AddForce(Vector3.up * 12, ForceMode.VelocityChange);
+            shiftPressed = false;
+            powerUpCount--;
+        }
+
 
 
 
@@ -145,6 +161,12 @@ public class Player : MonoBehaviour
         if(other.gameObject.layer == 9)
         {
             // other is the collider. so destroy the gameObject associated with that, only.
+            Destroy(other.gameObject);
+        }
+
+        if(other.gameObject.layer == 10)
+        {
+            powerUpCount++;
             Destroy(other.gameObject);
         }
         
