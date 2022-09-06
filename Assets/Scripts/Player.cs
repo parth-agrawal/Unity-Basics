@@ -115,7 +115,7 @@ public class Player : MonoBehaviour
             
 
            
-            rigidbodyComponent.AddForce(Vector3.up * 5, ForceMode.VelocityChange);
+            rigidbodyComponent.AddForce(Vector3.up * 7, ForceMode.VelocityChange);
             spacePressed = false;
 
             
@@ -137,5 +137,28 @@ public class Player : MonoBehaviour
 
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        // we are the player - so the "other" collider will be the coin, or whatever else
+
+        // we had set the Coins to be on the coin layer 9
+        if(other.gameObject.layer == 9)
+        {
+            // other is the collider. so destroy the gameObject associated with that, only.
+            Destroy(other.gameObject);
+        }
+        
+    }
+
 
 }
+
+
+/*
+ * Friction
+ * 
+ * You can create things called PhysicMaterials that can be given to the collider's
+ * PhysicMaterial property. You can set the Combined Friction with another object
+ * to be either Average or Minimum or Maximum - based on what other material the 
+ * collider is encountering.
+ */
